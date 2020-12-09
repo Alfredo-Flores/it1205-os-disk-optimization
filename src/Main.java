@@ -147,7 +147,6 @@ public class Main extends JFrame {
 				FormFactory.RELATED_GAP_ROWSPEC,}));
 
 		lblError = new JLabel("Error: Malform sequence.");
-		lblError.setIcon(new ImageIcon(Main.class.getResource("/com/sun/java/swing/plaf/windows/icons/Error.gif")));
 		panel.add(lblError, "2, 1, 5, 1");
 		lblError.setForeground(Color.RED);
 
