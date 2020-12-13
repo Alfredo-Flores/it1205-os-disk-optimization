@@ -27,23 +27,14 @@ public class DiskMovementPlot extends JPanel {
 	private boolean isPlottingFCFS;
 	private boolean isPlottingSSTF;
 	private boolean isPlottingSCAN;
-	private boolean isPlottingLOOK;
 	private boolean isPlottingCSCAN;
-	private boolean isPlottingCLOOK;
 
-    /**
-     * Creates a new demo.
-     *
-     * @param title  the frame title.
-     */
-    public DiskMovementPlot(DiskOptimizationAlgorithm doa, boolean isPlottingFCFS,boolean isPlottingSSTF,boolean isPlottingSCAN,boolean isPlottingLOOK,boolean isPlottingCSCAN,boolean isPlottingCLOOK) {
+    public DiskMovementPlot(DiskOptimizationAlgorithm doa, boolean isPlottingFCFS,boolean isPlottingSSTF,boolean isPlottingSCAN,boolean isPlottingCSCAN) {
     	this.doa = doa;
     	this.isPlottingFCFS = isPlottingFCFS;
     	this.isPlottingSSTF = isPlottingSSTF;
     	this.isPlottingSCAN = isPlottingSCAN;
-    	this.isPlottingLOOK = isPlottingLOOK;
     	this.isPlottingCSCAN = isPlottingCSCAN;
-    	this.isPlottingCLOOK = isPlottingCLOOK;
     	
         final XYDataset dataset = createDataset();
         final JFreeChart chart = createChart(dataset);
@@ -73,9 +64,7 @@ public class DiskMovementPlot extends JPanel {
     	if(isPlottingFCFS) dataset.addSeries(createSeries("FCFS", doa.fcfs()));
     	if(isPlottingSSTF) dataset.addSeries(createSeries("SSTF", doa.sstf()));
     	if(isPlottingSCAN) dataset.addSeries(createSeries("SCAN", doa.scan()));
-    	if(isPlottingLOOK) dataset.addSeries(createSeries("LOOK", doa.look()));
     	if(isPlottingCSCAN) dataset.addSeries(createSeries("CSCAN", doa.cscanPlot()));
-    	if(isPlottingCLOOK) dataset.addSeries(createSeries("CLOOK", doa.clookPlot()));
                 
         return dataset;
     }
@@ -91,9 +80,9 @@ public class DiskMovementPlot extends JPanel {
         
         // create the chart...
         final JFreeChart chart = ChartFactory.createXYLineChart(
-            "Line Chart Demo 6",      // chart title
-            "X",                      // x axis label
-            "Y",                      // y axis label
+            "Planificador de discos",      // chart title
+            "Tiempo",                      // x axis label
+            "Pistas",                      // y axis label
             dataset,                  // data
             PlotOrientation.HORIZONTAL,
             true,                     // include legend

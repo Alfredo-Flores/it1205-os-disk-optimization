@@ -93,9 +93,7 @@ public class Main extends JFrame {
 		System.out.println(algo.fcfs());
 		System.out.println(algo.sstf());
 		System.out.println(algo.scan());
-		System.out.println(algo.look());
 		System.out.println(algo.cscan());
-		System.out.println(algo.clook());
 
 	}
 
@@ -103,7 +101,7 @@ public class Main extends JFrame {
 	 * Create the frame.
 	 */
 	public Main() {
-		setTitle("Disk Optimization");
+		setTitle("Algoritmos de optimizacion de discos");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1032, 677);
 		contentPane = new JPanel();
@@ -150,7 +148,7 @@ public class Main extends JFrame {
 		panel.add(lblError, "2, 1, 5, 1");
 		lblError.setForeground(Color.RED);
 
-		JLabel lblPrevious = new JLabel("Previous");
+		JLabel lblPrevious = new JLabel("Previo");
 		panel.add(lblPrevious, "2, 3, right, default");
 
 		txtPrevious = new JTextField();
@@ -164,7 +162,7 @@ public class Main extends JFrame {
 		txtPrevious.setColumns(10);
 		txtPrevious.setText("1578");
 
-		JLabel lblCurrent = new JLabel("Current");
+		JLabel lblCurrent = new JLabel("Actual");
 		panel.add(lblCurrent, "2, 5, right, default");
 
 		txtCurrent = new JTextField();
@@ -178,7 +176,7 @@ public class Main extends JFrame {
 		txtCurrent.setColumns(10);
 		txtCurrent.setText("3098");
 
-		JLabel lblSequence = new JLabel("Sequence");
+		JLabel lblSequence = new JLabel("Secuencia");
 		panel.add(lblSequence, "2, 7, right, default");
 
 		txtSequence = new JTextField();
@@ -231,44 +229,19 @@ public class Main extends JFrame {
 
 		panel.add(cbSCAN, "6, 13");
 
-		JLabel lblLook = new JLabel("LOOK");
-		lblLook.setHorizontalAlignment(SwingConstants.RIGHT);
-		panel.add(lblLook, "2, 15");
-
-		panel.add(lblLOOK, "4, 15");
-		cbLOOK.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				refresh();
-			}
-		});
-
-		panel.add(cbLOOK, "6, 15");
-
 		JLabel lblCscan = new JLabel("C-SCAN");
 		lblCscan.setHorizontalAlignment(SwingConstants.RIGHT);
-		panel.add(lblCscan, "2, 17");
+		panel.add(lblCscan, "2, 15");
 
 		lblCSCAN.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-		panel.add(lblCSCAN, "4, 17");
+		panel.add(lblCSCAN, "4, 15");
 		cbCSCAN.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				refresh();
 			}
 		});
 
-		panel.add(cbCSCAN, "6, 17");
-		
-		JLabel lblClook = new JLabel("C-LOOK");
-		panel.add(lblClook, "2, 19, right, default");
-		
-		panel.add(lblCLOOK, "4, 19");
-		cbCLOOK.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				refresh();
-			}
-		});
-		
-		panel.add(cbCLOOK, "6, 19");
+		panel.add(cbCSCAN, "6, 15");
 
 		JPanel panel_1 = new JPanel();
 		panel_1.setBackground(Color.WHITE);
@@ -288,14 +261,14 @@ public class Main extends JFrame {
 				previous = Integer.parseInt(txtPrevious.getText());
 				lblError.setText("");
 			} catch (NumberFormatException ex) {
-				throw new Exception("Previous: Invalid number format. Only integer allowed.");
+				throw new Exception("Previo: Formato de numero invalido. Solo se permiten enteros");
 			}
 
 			try {
 				current = Integer.parseInt(txtCurrent.getText());
 				lblError.setText("");
 			} catch (NumberFormatException ex) {
-				throw new Exception("Current: Invalid number format. Only integer allowed.");
+				throw new Exception("Actual: Formato de numero invalido. Solo se permiten enteros");
 			}
 
 			try {
@@ -305,7 +278,7 @@ public class Main extends JFrame {
 				}
 				lblError.setText("");
 			} catch (NumberFormatException ex) {
-				throw new Exception("Sequence: Invalid sequence format. Only integer allowed. Multiple values seperated by comma (,). i.e: 1000,2000,3000");
+				throw new Exception("Secuencia: Formato de numero invalido. Solo se permiten enteros, varios valores deben estar separados por comas (,) sin espacios");
 			}
 			
 			if (lblError.getText().isEmpty()) {
@@ -320,18 +293,14 @@ public class Main extends JFrame {
 						cbFCFS.isSelected(),
 						cbSSTF.isSelected(),
 						cbSCAN.isSelected(),
-						cbLOOK.isSelected(),
-						cbCSCAN.isSelected(),
-						cbCLOOK.isSelected());
+						cbCSCAN.isSelected());
 				diskMovementPlot.setBackground(Color.WHITE);
 				contentPane.add(diskMovementPlot, BorderLayout.CENTER);
 				
 				lblFCFS.setText(StringUtils.join(doa.fcfs(), ","));
 				lblSSTF.setText(StringUtils.join(doa.sstf(), ","));
 				lblSCAN.setText(StringUtils.join(doa.scan(), ","));
-				lblLOOK.setText(StringUtils.join(doa.look(), ","));
 				lblCSCAN.setText(StringUtils.join(doa.cscan(), ","));
-				lblCLOOK.setText(StringUtils.join(doa.clook(), ","));
 
 				this.repaint();
 				this.revalidate();

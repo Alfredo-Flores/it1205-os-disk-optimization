@@ -13,321 +13,178 @@ import java.util.List;
  */
 public class DiskOptimizationAlgorithm {
 
-	private List<Integer> sequence;
-	private int current;
-	private int previous;
+	private List<Integer> secuencia;
+	private int actual;
+	private int previo;
 
 	/**
 	 * 
 	 * Initialize a DiskOptimizationAlgorithm instance.
 	 * 
-	 * @param previous
+	 * @param previo
 	 *            - The previous cylinder served.
-	 * @param current
+	 * @param actual
 	 *            - Current position of the cylinder.
-	 * @param sequence
+	 * @param secuencia
 	 *            - Given queued cylinder sequence, excluding current cylinder.
 	 */
-	public DiskOptimizationAlgorithm(int previous, int current,
-			List<Integer> sequence) {
-		this.sequence = new ArrayList<Integer>();
-		this.current = current;
-		this.previous = previous;
+	public DiskOptimizationAlgorithm(int previo, int actual,
+									 List<Integer> secuencia) {
+		this.secuencia = new ArrayList<Integer>();
+		this.actual = actual;
+		this.previo = previo;
 
 		// Concatenates current cylinder and given sequence into new list, for
 		// ease of calculations later.
-		this.sequence.add(current);
-		this.sequence.addAll(sequence);
+		this.secuencia.add(actual);
+		this.secuencia.addAll(secuencia);
 	}
 
-	/**
-	 * 
-	 * Sort the instance with First Come First Serve algorithm.
-	 * 
-	 * @return A list of sorted sequence in terms of FCFS algorithm.
-	 */
 	public List<Integer> fcfs() {
-		return this.sequence;
+		return this.secuencia;
 	}
 
-	/**
-	 * 
-	 * Sort the instance with Shortest Seek Time First algorithm
-	 * 
-	 * @return A list of sorted sequence in terms of SSTF algorithm.
-	 */
 	public List<Integer> sstf() {
-		// Modified version from the given practical PDF
-		int n = sequence.size();
-		int c = current;
-		int sstf[] = new int[n];
-		for (int i = 0; i < n; i++) {
-			sstf[i] = sequence.get(i);
+		int tamanolistasec = secuencia.size();
+		int indiceactual = actual;
+		int sstf[] = new int[tamanolistasec];
+		for (int i = 0; i < tamanolistasec; i++) {
+			sstf[i] = secuencia.get(i);
 		}
 
-		int ii = -1;
-		for (int i = 0; i < n; i++) {
-			int minimum = Integer.MAX_VALUE;
-			ii = i;
-			for (int j = i; j < n; j++) {
-				int distance = Math.abs(c - sstf[j]);
-				if (distance < minimum) {
-					ii = j;
-					minimum = distance;
+		int indice2 = -1;
+		for (int i = 0; i < tamanolistasec; i++) {
+			int minimo = Integer.MAX_VALUE;
+			indice2 = i;
+			for (int j = i; j < tamanolistasec; j++) {
+				int distancia = Math.abs(indiceactual - sstf[j]);
+				if (distancia < minimo) {
+					indice2 = j;
+					minimo = distancia;
 				}
 			}
-			int tmp = sstf[i];
-			sstf[i] = sstf[ii];
-			sstf[ii] = tmp;
-			c = sstf[i];
+			int temp = sstf[i];
+			sstf[i] = sstf[indice2];
+			sstf[indice2] = temp;
+			indiceactual = sstf[i];
 		}
 
-		List<Integer> sstfList = new ArrayList<Integer>();
-		for (int index = 0; index < sstf.length; index++) {
-			sstfList.add(sstf[index]);
+		List<Integer> ListaSstf = new ArrayList<Integer>();
+		for (int indice = 0; indice < sstf.length; indice++) {
+			ListaSstf.add(sstf[indice]);
 		}
 
-		return sstfList;
+		return ListaSstf;
 	}
 
-	/**
-	 * Sort the instance with SCAN (Elavator) algorithm
-	 * 
-	 * @return A list of sorted sequence in terms of SCAN algorithm.
-	 */
 	public List<Integer> scan() {
-		
-		/*
-		 * Logic applied:
-		 * 
-		 * previous = 700
-		 * current = 857
-		 * given 751, 4505, 757, 3506, 4578, 50, 351, 22, 1058
-		 * 
-		 * Starting sequence: 
-		 * [857, 751, 4505, 757, 3506, 4578, 50, 351, 22, 1058]
-		 * 
-		 * Sort by ascending: 
-		 * [22, 50, 351, 751, 757, 857, 1058, 3506, 4505, 4578, 4999]
-		 * 
-		 * Find the index of current cylinder after sorting :
-		 * [22, 50, 351, 751, 757, 857, 1058, 3506, 4505, 4578, 4999]
-		 * 						    ^
-		 * index =				   (5)
-		 * 
-		 * Split the sequence into two by taking index of the current cylinder as reference
-		 * [22, 50, 351, 751, 757]
-		 * [857, 1058, 3506, 4505, 4578, 4999]
-		 * 
-		 * Reverse the order of the first sequence
-		 * [757, 751, 351, 50, 22]
-		 * 
-		 * Append the first sequence on to the second sequence
-		 * [857, 1058, 3506, 4505, 4578, 4999, 757, 751, 351, 50, 22]
-		 * 
-		 */
+		List<Integer> NuevaLista = new ArrayList<Integer>(secuencia);
 
-		// Initialize a new List to prevent overwriting original sequence
-		List<Integer> aSeq = new ArrayList<Integer>(sequence);
+		int Direccion = previo - actual;
 
-		// Determine direction
-		int direction = previous - current;
+		if (Direccion < 0) {
 
-		// If direction is less than 0, it is increasing
-		// If direction is greater than 0, it is decreasing
-		// If direction is 0, the arm does not move, throw exception
-		if (direction < 0) {
-			// Check if the input sequence contain boundary cylinder
-			// If not, include the max cylinder to the sequence
-			if (!aSeq.contains(4999)) {
-				aSeq.add(4999);
+			if (!NuevaLista.contains(4999)) {
+				NuevaLista.add(4999);
 			}
 
-			// Sort the current sequence in ascending order
-			Collections.sort(aSeq);
-		} else if (direction > 0) {
-			if(!aSeq.contains(0)){
-				aSeq.add(0);
+			Collections.sort(NuevaLista);
+		} else if (Direccion > 0) {
+			if(!NuevaLista.contains(0)){
+				NuevaLista.add(0);
 			}
-			
-			// Sort the current sequence in descending order
-			Collections.sort(aSeq);
-			Collections.reverse(aSeq);
+
+			Collections.sort(NuevaLista);
+			Collections.reverse(NuevaLista);
 		} else {
 			throw new UnsupportedOperationException(
-					"Previous cylinder and current cylinder is the same. The arm does not move at all!");
+					"El cilindro anterior y el cilindro actual son iguales. ¡El brazo no se mueve en absoluto!");
 		}
-		
-		// Find the index position of the current cylinder after sorting
-		int currentCylinderIndex = aSeq.indexOf(current);
-		
-		// Split the sequence into two part, taking the index of the current cylinder as reference
-		List<Integer> scanSplicedArr1 = aSeq.subList(0, currentCylinderIndex);
-		List<Integer> scanSplicedArr2 = aSeq.subList(currentCylinderIndex,
-				aSeq.size());
 
-		// Reverse first sequence
-		Collections.reverse(scanSplicedArr1);
-		
-		// Append the first sequence onto the second sequence 
-		scanSplicedArr2.addAll(scanSplicedArr1);
+		int IndiceDeCilindrosActual = NuevaLista.indexOf(actual);
 
-		return scanSplicedArr2;
+		List<Integer> scanParte1 = NuevaLista.subList(0, IndiceDeCilindrosActual);
+		List<Integer> scanParte2 = NuevaLista.subList(IndiceDeCilindrosActual,NuevaLista.size());
+
+		Collections.reverse(scanParte1);
+
+		scanParte2.addAll(scanParte1);
+
+		return scanParte2;
 	}
 
 	public List<Integer> cscan() {
 
-		List<Integer> aSeq = new ArrayList<Integer>(sequence);
+		List<Integer> NuevaLista = new ArrayList<Integer>(secuencia);
 
-		int direction = previous - current;
+		int direction = previo - actual;
 		
-		// Adding cylinder boundaries if the given sequence do not have them
-		if (!aSeq.contains(4999)) {
-			aSeq.add(4999);
+		// añadir limites superior o inferior si no lo tiene
+		if (!NuevaLista.contains(4999)) {
+			NuevaLista.add(4999);
 		}
-		if (!aSeq.contains(0)) {
-			aSeq.add(0);
+		if (!NuevaLista.contains(0)) {
+			NuevaLista.add(0);
 		}
 
-		if (direction < 0) { // increasing
-			Collections.sort(aSeq);
-		} else if (direction > 0) { // decreasing
-			Collections.sort(aSeq);
-			Collections.reverse(aSeq);
+		if (direction < 0) { // aumentando
+			Collections.sort(NuevaLista);
+		} else if (direction > 0) { // disminuyendo
+			Collections.sort(NuevaLista);
+			Collections.reverse(NuevaLista);
 		} else {
-			// do nothing
+			// nada
 		}
 
-		int currentCylinderIndex = aSeq.indexOf(current);
+		int IndiceDeCilindrosActual = NuevaLista.indexOf(actual);
 
-		List<Integer> scanSplicedArr1 = aSeq.subList(0, currentCylinderIndex);
-		List<Integer> scanSplicedArr2 = aSeq.subList(currentCylinderIndex,
-				aSeq.size());
+		// partimos la lista en dos a base del indice actual
+		List<Integer> scanParte1 = NuevaLista.subList(0, IndiceDeCilindrosActual);
+		List<Integer> scanParte2 = NuevaLista.subList(IndiceDeCilindrosActual,
+				NuevaLista.size());
 
-		scanSplicedArr2.addAll(scanSplicedArr1);
+		scanParte2.addAll(scanParte1);
 
-		return scanSplicedArr2;
+		return scanParte2;
 	}
 
-	public List<Integer> look() {
-
-		List<Integer> aSeq = new ArrayList<Integer>(sequence);
-
-		int direction = previous - current;
-
-		if (direction < 0) {// increasing
-			Collections.sort(aSeq);
-		} else if (direction > 0) {// decreasing
-			Collections.sort(aSeq);
-			Collections.reverse(aSeq);
-		}
-
-		int currentCylinderIndex = aSeq.indexOf(current);
-
-		List<Integer> lookSplicedArr1 = aSeq.subList(0, currentCylinderIndex);
-		List<Integer> lookSplicedArr2 = aSeq.subList(currentCylinderIndex,
-				aSeq.size());
-		Collections.reverse(lookSplicedArr1);
-		lookSplicedArr2.addAll(lookSplicedArr1);
-
-		return lookSplicedArr2;
-	}
-
-	public List<Integer> clook() {
-
-		List<Integer> aSeq = new ArrayList<Integer>(sequence);
-
-		int direction = previous - current;
-
-		if (direction < 0) {// increasing
-			Collections.sort(aSeq);
-		} else if (direction > 0) {// decreasing
-			Collections.sort(aSeq);
-			Collections.reverse(aSeq);
-		}
-
-		int currentCylinderIndex = aSeq.indexOf(current);
-
-		List<Integer> lookSplicedArr1 = aSeq.subList(0, currentCylinderIndex);
-		List<Integer> lookSplicedArr2 = aSeq.subList(currentCylinderIndex,
-				aSeq.size());
-
-		lookSplicedArr2.addAll(lookSplicedArr1);
-
-		return lookSplicedArr2;
-	}
-	
-	/*
-	 * FOLLOWING TWO METHOD ARE FOR PLOTTING PURPOSE ONLY
-	 * both include a null value to plot the discontinuous line between boundary seek values
-	 * use clook() or cscan() to display sequence without null values.
-	 * 
-	 */
+	// para visualizar
 	
 	public List<Integer> cscanPlot() {
 
-		List<Integer> aSeq = new ArrayList<Integer>(sequence);
+		List<Integer> NuevaLista = new ArrayList<Integer>(secuencia);
 
-		int direction = previous - current;
+		int direction = previo - actual;
 		
 		// Adding cylinder boundaries if the given sequence do not have them
-		if (!aSeq.contains(4999)) {
-			aSeq.add(4999);
+		if (!NuevaLista.contains(4999)) {
+			NuevaLista.add(4999);
 		}
-		if (!aSeq.contains(0)) {
-			aSeq.add(0);
+		if (!NuevaLista.contains(0)) {
+			NuevaLista.add(0);
 		}
 
 		if (direction < 0) { // increasing
-			Collections.sort(aSeq);
+			Collections.sort(NuevaLista);
 		} else if (direction > 0) { // decreasing
-			Collections.sort(aSeq);
-			Collections.reverse(aSeq);
+			Collections.sort(NuevaLista);
+			Collections.reverse(NuevaLista);
 		} else {
 			// do nothing
 		}
 		
 		// This is for plotting purpose, to simulate discontinuous line between the boundary seek
 		// Should remove the null when displaying the sequence
-		aSeq.add(null);
+		NuevaLista.add(null);
 
-		int currentCylinderIndex = aSeq.indexOf(current);
+		int IndiceDeCilindrosActual = NuevaLista.indexOf(actual);
 
-		List<Integer> scanSplicedArr1 = aSeq.subList(0, currentCylinderIndex);
-		List<Integer> scanSplicedArr2 = aSeq.subList(currentCylinderIndex,
-				aSeq.size());
+		List<Integer> scanSplicedArr1 = NuevaLista.subList(0, IndiceDeCilindrosActual);
+		List<Integer> scanSplicedArr2 = NuevaLista.subList(IndiceDeCilindrosActual,
+				NuevaLista.size());
 
 		scanSplicedArr2.addAll(scanSplicedArr1);
 
 		return scanSplicedArr2;
 	}
-	
-	public List<Integer> clookPlot() {
-
-		List<Integer> aSeq = new ArrayList<Integer>(sequence);
-
-		int direction = previous - current;
-
-		if (direction < 0) {// increasing
-			Collections.sort(aSeq);
-		} else if (direction > 0) {// decreasing
-			Collections.sort(aSeq);
-			Collections.reverse(aSeq);
-		}
-		
-		// This is for plotting purpose, to simulate discontinuous line between the boundary seek
-		// Should remove the null when displaying the sequence
-		aSeq.add(null);
-
-		int currentCylinderIndex = aSeq.indexOf(current);
-
-		List<Integer> lookSplicedArr1 = aSeq.subList(0, currentCylinderIndex);
-		List<Integer> lookSplicedArr2 = aSeq.subList(currentCylinderIndex,
-				aSeq.size());
-
-		lookSplicedArr2.addAll(lookSplicedArr1);
-
-		return lookSplicedArr2;
-	}
-
 }
